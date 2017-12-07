@@ -20,7 +20,7 @@ public class PetitTouitte extends HttpServlet {
     response.setContentType("text/plain");
     response.setCharacterEncoding("UTF-8");
 
-    response.getWriter().print("Hello Petit Touitte!\r\n");
+    response.getWriter().print("Bonsoir Petit Touitte depuis jit!\r\n");
 
   }
 }
