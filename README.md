@@ -16,5 +16,3 @@ Pour compiler et exécuter le projet sur votre propre projet App Engine :
 6. Dans les propriétés du projet, section `Java Build Path`, onglet `Source`, bouton `Link Source` :
     - `Linked folder location` : le chemin vers le dossier `src` de ce dépôt
     - `Folder name` : `src`
-7. Glissez-déposez le dossier `war` du dépôt vers votre projet dans la vue `Package Explorer`, et choisissez `Link to files and folders
-    - Cela devrait lier le dossier `war` dans votre projet en l'ajoutant en bas du dossier `build` dans le `Package Explorer`
