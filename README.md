@@ -7,7 +7,7 @@ Pour compiler et exécuter le projet sur votre propre projet App Engine :
 
 
 1. Installez Eclipse avec le plugin Google App Engine
-2. Paramétrez le plugin en vous connectant à votre compte, puis en lui donnant le chemin vers le SDK sur votre machine
+2. Paramétrez le plugin en vous connectant à votre compte
 3. Créez un nouveau projet `Google App Engine`, donnez lui les paramètres suivants :
     - Package `petittouitte`
 4. Supprimez les dossiers `src` et `war`
