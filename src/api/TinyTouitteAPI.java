@@ -1,5 +1,7 @@
 package api;
 
+import java.util.List;
+
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -11,11 +13,13 @@ import resources.User;
 
 @Api(
   name="tinytouitte",
-  version="v1"
+  version="v1",
+  description="The TinyTouitte API"
 )
 public class TinyTouitteAPI {
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "user.get")
-	public User get(@Named("id") Long id)
+	public User get(@Named("id") Long id) throws Exception
 	{
 		PersistenceManager pm = getPersistenceManager();
 
@@ -23,7 +27,12 @@ public class TinyTouitteAPI {
 
     query.setFilter("id == " + id);
 
-    return (User) pm.newQuery(query).execute();
+    List<User> result = (List<User>) pm.newQuery(query).execute();
+
+    if (result.size() == 0)
+      throw new Exception("User not found");
+
+    return result.get(0);
 	}
 
 	private static PersistenceManager getPersistenceManager() {
