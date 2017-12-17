@@ -5,6 +5,7 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+import javax.persistence.Transient;
 
 @PersistenceCapable(identityType=IdentityType.APPLICATION)
 public class User
@@ -19,7 +20,10 @@ public class User
   @Persistent
   String name; //"Firstname Lastname"
 
+  @Transient
   private Long followers;
+  
+  @Transient
   private Long following;
 
   public Long getId() {
