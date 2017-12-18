@@ -99,18 +99,18 @@ public class PetitTouitteAPI
 		return user;
 	}
 
-  @ApiMethod(name ="user.touittes")
-  @SuppressWarnings("unchecked")
-  public List<Touitte> userTouitte(@Named("iduser") Long id)
-  {
-    PersistenceManager pm = getPersistenceManager();
+	@ApiMethod(name ="user.touittes")
+	@SuppressWarnings("unchecked")
+	public List<Touitte> userTouitte(@Named("iduser") Long id)
+	{
+		PersistenceManager pm = getPersistenceManager();
 
 		Query query = pm.newQuery(Touitte.class);
 
-    query.setFilter("author == " + id);
+		query.setFilter("author == " + id);
 
-    return (List<Touitte>) pm.newQuery(query).execute();
-  }
+		return (List<Touitte>) pm.newQuery(query).execute();
+	}
 
 	@ApiMethod(name = "user.timeline")
 	@SuppressWarnings("unchecked")
