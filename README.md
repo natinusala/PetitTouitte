@@ -16,3 +16,7 @@ Pour compiler et exécuter le projet sur votre propre projet App Engine :
 6. Dans les propriétés du projet, section `Java Build Path`, onglet `Source`, bouton `Link Source` :
     - `Linked folder location` : le chemin vers le dossier `src` de ce dépôt
     - `Folder name` : `src`
+
+## Spécification de l'API
+
+https://docs.google.com/document/d/1_BN5aj-6OwSGUKuFW0WvgPyNOQaWXK6lMukGHe_klMI/edit?usp=sharing
