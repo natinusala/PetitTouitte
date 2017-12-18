@@ -23,8 +23,6 @@ import resources.User;
 		)
 public class PetitTouitteAPI
 {
-	//TODO Add request time
-
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "user.get")
 	public User getUser(@Named("id") Long id)
@@ -101,6 +99,19 @@ public class PetitTouitteAPI
 		return user;
 	}
 
+  @ApiMethod(name ="user.touittes")
+  @SuppressWarnings("unchecked")
+  public List<Touitte> userTouitte(@Named("iduser") Long id)
+  {
+    PersistenceManager pm = getPersistenceManager();
+
+		Query query = pm.newQuery(Touitte.class);
+
+    query.setFilter("author == " + id);
+
+    return (List<Touitte>) pm.newQuery(query).execute();
+  }
+
 	@ApiMethod(name = "user.timeline")
 	@SuppressWarnings("unchecked")
 	public List<Touitte> userTimeline(@Named("iduser") Long id)
@@ -141,7 +152,7 @@ public class PetitTouitteAPI
 		TouitteIndex index = new TouitteIndex();
 
 		index.setTouitte(touitte);
-		index.setReceivers(new HashSet<Long>(author.getFollowers()));
+		index.setReceivers(author.getFollowers());
 
 		PersistenceManager pm = getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
