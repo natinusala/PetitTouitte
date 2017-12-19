@@ -24,8 +24,8 @@ import resources.User;
 public class PetitTouitteAPI
 {
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "user.get")
-	public User getUser(@Named("id") Long id)
+	@ApiMethod(name = "user.get.fromid", path = "user_fromid")
+	public User getUserFromId(@Named("id") Long id)
 	{
 		PersistenceManager pm = getPersistenceManager();
 
@@ -46,8 +46,8 @@ public class PetitTouitteAPI
 	@ApiMethod(name = "user.follow")
 	public User followUser(@Named("idFollower") Long idFollower, @Named("idFollowing") Long idFollowing) throws Exception
 	{
-		User follower = getUser(idFollower);
-		User following = getUser(idFollowing);
+		User follower = getUserFromId(idFollower);
+		User following = getUserFromId(idFollowing);
 
 		if (follower.getFollowing() == null)
 			follower.setFollowing(new HashSet<Long>());
@@ -131,12 +131,33 @@ public class PetitTouitteAPI
 
 		return list;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "user.get.fromalias", path = "user_fromalias")
+	public User getUserFromAlias(@Named("alias") String alias)
+	{
+		PersistenceManager pm = getPersistenceManager();
+
+		Query query = pm.newQuery(User.class);
+
+		query.setFilter("alias == \"" + alias + "\"");
+		 		
+		List<User> result = (List<User>) pm.newQuery(query).execute();
+
+		if (result.size() == 0)
+			return null;
+
+		User user = result.get(0);
+
+		return user;
+	}
+
 
 	@ApiMethod(name = "touitte.post")
 	public Touitte postTouitte(@Named("idAuthor") Long idUserAuthor, @Named("content") String content) throws Exception
 	{
 		//Author
-		User author = getUser(idUserAuthor);
+		User author = getUserFromId(idUserAuthor);
 
 		if (author == null)
 			throw new Exception("Invalid author");
