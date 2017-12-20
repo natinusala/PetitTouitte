@@ -1,6 +1,8 @@
 # PetitTouitte
 Projet de Web Cloud &amp; Datastore de M1 ALMA
 
+Lien vers le front-end : http://plnkr.co/edit/VIhnJNxAk1KzpSVMZT6G?p=preview
+
 ## Compilation
 
 Pour compiler et exécuter le projet sur votre propre projet App Engine :
