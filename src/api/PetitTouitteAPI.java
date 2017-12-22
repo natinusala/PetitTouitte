@@ -42,9 +42,6 @@ public class PetitTouitteAPI
 			follower.getFollowing().add(following.getAlias());
 			following.getFollowers().add(follower.getAlias());
 
-			follower.setFollowingCount(follower.getFollowingCount() + 1);
-			following.setFollowersCount(following.getFollowersCount() + 1);
-
 			tx.commit();
 		}
 		finally
@@ -58,6 +55,88 @@ public class PetitTouitteAPI
 		pm.close();
 
 		return follower;
+	}
+	
+	public static class BenchmarkResult
+	{
+		public boolean success;
+		public long timeInMillis;
+	}
+	
+	@ApiMethod(name = "benchmark.purge")
+	public BenchmarkResult purge()
+	{
+		BenchmarkResult result = new BenchmarkResult();
+		long time = System.currentTimeMillis();
+		
+		PersistenceManager pm = getPersistenceManager();
+		
+		Query query = pm.newQuery(User.class);
+		query.deletePersistentAll();
+		
+		query = pm.newQuery(TouitteIndex.class);
+		query.deletePersistentAll();
+		
+		query = pm.newQuery(Touitte.class);
+		query.deletePersistentAll();
+		
+		pm.close();
+		
+		result.timeInMillis = System.currentTimeMillis() - time;
+		result.success = true;
+		
+		return result;
+	}
+	
+	@ApiMethod(name = "benchmark.createusers")
+	public BenchmarkResult createUsers(@Named("count") long count) throws Exception
+	{
+		BenchmarkResult result = new BenchmarkResult();
+		long time = System.currentTimeMillis();
+		
+		for (int i = 0; i < count; i++)
+		{
+			User user = new User();
+			user.setAlias("n" + i);
+			user.setName("User" + i);
+			insertUser(user);
+		}
+		
+		result.timeInMillis = System.currentTimeMillis() - time;
+		result.success = true;
+		
+		return result;
+	}
+	
+	@ApiMethod(name = "benchmark.followfirstuser")
+	public BenchmarkResult followFirstUser(@Named("max") long max) throws Exception
+	{
+		BenchmarkResult result = new BenchmarkResult();
+		long time = System.currentTimeMillis();
+		
+		for (int i = 1; i < max; i++)
+		{
+			followUser("n" + i, "n0");
+		}
+		
+		result.timeInMillis = System.currentTimeMillis() - time;
+		result.success = true;
+		
+		return result;
+	}
+	
+	@ApiMethod(name = "benchmark.touitte")
+	public BenchmarkResult benchmarkTouitte() throws Exception
+	{
+		BenchmarkResult result = new BenchmarkResult();
+		long time = System.currentTimeMillis();
+		
+		postTouitte("n0", "Touitte de banc de test : " + System.currentTimeMillis());
+		
+		result.timeInMillis = System.currentTimeMillis() - time;
+		result.success = true;
+		
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -27,12 +27,6 @@ public class User
 	@Persistent
 	@ApiResourceProperty(ignored=AnnotationBoolean.TRUE)
 	Set<String> following;
-	
-	@Persistent
-	long followersCount;
-	
-	@Persistent
-	long followingCount;
 
 	public String getAlias() {
 		return alias;
@@ -66,21 +60,6 @@ public class User
 		this.following = following;
 	}
 
-	public long getFollowersCount() {
-		return followersCount;
-	}
-
-	public void setFollowersCount(long followersCount) {
-		this.followersCount = followersCount;
-	}
-
-	public long getFollowingCount() {
-		return followingCount;
-	}
-
-	public void setFollowingCount(long followingCount) {
-		this.followingCount = followingCount;
-	}
 
 
 	
