@@ -12,7 +12,7 @@ public class Touitte
 {
 	@PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
+    Key key;
 	
 	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
 	Long date;
@@ -21,7 +21,7 @@ public class Touitte
 	String content;
 
 	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
-	Long author;
+	String author;
 
 	public Long getDate() {
 		return date;
@@ -39,11 +39,11 @@ public class Touitte
 		this.content = content;
 	}
 
-	public Long getAuthor() {
+	public String getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(Long author) {
+	public void setAuthor(String author) {
 		this.author = author;
 	}
 

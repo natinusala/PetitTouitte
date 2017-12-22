@@ -7,33 +7,26 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable(identityType=IdentityType.APPLICATION)
 public class TouitteIndex
 {
 	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
 	@PrimaryKey
-	Long id;
+	Key key;
 
 	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
-	Set<Long> receivers;
+	Set<String> receivers;
 
 	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
 	Touitte touitte;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Set<Long> getReceivers() {
+	public Set<String> getReceivers() {
 		return receivers;
 	}
 
-	public void setReceivers(Set<Long> receivers) {
+	public void setReceivers(Set<String> receivers) {
 		this.receivers = receivers;
 	}
 

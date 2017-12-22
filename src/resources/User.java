@@ -2,7 +2,6 @@ package resources;
 
 import java.util.Set;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -14,11 +13,8 @@ import com.google.api.server.spi.config.ApiResourceProperty;
 @PersistenceCapable(identityType=IdentityType.APPLICATION)
 public class User
 {
-	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
-	@PrimaryKey
-	Long id;
-
 	@Persistent
+	@PrimaryKey
 	String alias; //"@something"
 
 	@Persistent
@@ -26,25 +22,17 @@ public class User
 
 	@Persistent
 	@ApiResourceProperty(ignored=AnnotationBoolean.TRUE)
-	Set<Long> followers; //list of user ids
+	Set<String> followers;
 
 	@Persistent
 	@ApiResourceProperty(ignored=AnnotationBoolean.TRUE)
-	Set<Long> following; //list of user ids
+	Set<String> following;
 	
 	@Persistent
 	long followersCount;
 	
 	@Persistent
 	long followingCount;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAlias() {
 		return alias;
@@ -62,19 +50,19 @@ public class User
 		this.name = name;
 	}
 
-	public Set<Long> getFollowers() {
+	public Set<String> getFollowers() {
 		return followers;
 	}
 
-	public void setFollowers(Set<Long> followers) {
+	public void setFollowers(Set<String> followers) {
 		this.followers = followers;
 	}
 
-	public Set<Long> getFollowing() {
+	public Set<String> getFollowing() {
 		return following;
 	}
 
-	public void setFollowing(Set<Long> following) {
+	public void setFollowing(Set<String> following) {
 		this.following = following;
 	}
 

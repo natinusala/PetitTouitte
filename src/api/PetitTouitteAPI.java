@@ -23,48 +23,28 @@ import resources.User;
 		)
 public class PetitTouitteAPI
 {
-	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "user.get.fromid", path = "user_fromid")
-	public User getUserFromId(@Named("id") Long id)
-	{
-		PersistenceManager pm = getPersistenceManager();
-
-		Query query = pm.newQuery(User.class);
-
-		query.setFilter("id == " + id);
-
-		List<User> result = (List<User>) pm.newQuery(query).execute();
-
-		if (result.size() == 0)
-			return null;
-
-		User user = result.get(0);
-
-		return user;
-	}
-
 	@ApiMethod(name = "user.follow")
-	public User followUser(@Named("idFollower") Long idFollower, @Named("idFollowing") Long idFollowing) throws Exception
+	public User followUser(@Named("aliasFollower") String aliasFollower, @Named("aliasFollowing") String aliasFollowing) throws Exception
 	{
 		PersistenceManager pm = getPersistenceManager();
-		
-		Transaction tx = pm.currentTransaction();	
-		
+
+		Transaction tx = pm.currentTransaction();
+
 		User follower = null;
-		
+
 		try
 		{
 			tx.begin();
 
-			follower = pm.getObjectById(User.class, idFollower);
-			User following = pm.getObjectById(User.class, idFollowing);
+			follower = pm.getObjectById(User.class, aliasFollower);
+			User following = pm.getObjectById(User.class, aliasFollowing);
 
-			follower.getFollowing().add(idFollowing);
-			following.getFollowers().add(idFollower);
+			follower.getFollowing().add(following.getAlias());
+			following.getFollowers().add(follower.getAlias());
 
 			follower.setFollowingCount(follower.getFollowingCount() + 1);
 			following.setFollowersCount(following.getFollowersCount() + 1);
-			
+
 			tx.commit();
 		}
 		finally
@@ -74,9 +54,9 @@ public class PetitTouitteAPI
 				tx.rollback();
 			}
 		}
-		
+
 		pm.close();
-		
+
 		return follower;
 	}
 
@@ -96,18 +76,18 @@ public class PetitTouitteAPI
 	{
 		if (user == null || user.getAlias() == null || user.getName() == null)
 			throw new Exception("Invalid user");
-		
+
 		if (user.getFollowing() == null)
-			user.setFollowing(new HashSet<Long>());
+			user.setFollowing(new HashSet<String>());
 
 		if (user.getFollowers() == null)
-			user.setFollowers(new HashSet<Long>());
-		
+			user.setFollowers(new HashSet<String>());
+
 		PersistenceManager pm = getPersistenceManager();
 
 		pm.makePersistent(user);
-		
-		user.getFollowers().add(user.getId());
+
+		user.getFollowers().add(user.getAlias());
 
 		pm.close();
 
@@ -116,26 +96,26 @@ public class PetitTouitteAPI
 
 	@ApiMethod(name ="user.touittes")
 	@SuppressWarnings("unchecked")
-	public List<Touitte> userTouitte(@Named("iduser") Long id)
+	public List<Touitte> userTouitte(@Named("aliasUser") String alias)
 	{
 		PersistenceManager pm = getPersistenceManager();
 
 		Query query = pm.newQuery(Touitte.class);
 
-		query.setFilter("author == " + id);
+		query.setFilter("author == \"" + alias + "\"");
 
 		return (List<Touitte>) pm.newQuery(query).execute();
 	}
 
 	@ApiMethod(name = "user.timeline")
 	@SuppressWarnings("unchecked")
-	public List<Touitte> userTimeline(@Named("iduser") Long id)
+	public List<Touitte> userTimeline(@Named("aliasUser") String alias)
 	{
 		PersistenceManager pm = getPersistenceManager();
 
 		Query query = pm.newQuery(TouitteIndex.class);
 
-		query.setFilter("receivers == " + id);
+		query.setFilter("receivers == \"" + alias + "\"");
 
 		List<TouitteIndex> indexes = (List<TouitteIndex>) pm.newQuery(query).execute();
 
@@ -146,9 +126,9 @@ public class PetitTouitteAPI
 
 		return list;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "user.get.fromalias", path = "user_fromalias")
+	@ApiMethod(name = "user.get")
 	public User getUserFromAlias(@Named("alias") String alias)
 	{
 		PersistenceManager pm = getPersistenceManager();
@@ -156,7 +136,7 @@ public class PetitTouitteAPI
 		Query query = pm.newQuery(User.class);
 
 		query.setFilter("alias == \"" + alias + "\"");
-		 		
+
 		List<User> result = (List<User>) pm.newQuery(query).execute();
 
 		if (result.size() == 0)
@@ -169,10 +149,12 @@ public class PetitTouitteAPI
 
 
 	@ApiMethod(name = "touitte.post")
-	public Touitte postTouitte(@Named("idAuthor") Long idUserAuthor, @Named("content") String content) throws Exception
+	public Touitte postTouitte(@Named("aliasAuthor") String aliasUserAuthor, @Named("content") String content) throws Exception
 	{
 		//Author
-		User author = getUserFromId(idUserAuthor);
+		PersistenceManager pm = getPersistenceManager();
+
+		User author = pm.getObjectById(User.class, aliasUserAuthor);
 
 		if (author == null)
 			throw new Exception("Invalid author");
@@ -180,7 +162,7 @@ public class PetitTouitteAPI
 		//Touitte
 		Touitte touitte = new Touitte();
 
-		touitte.setAuthor(idUserAuthor);
+		touitte.setAuthor(aliasUserAuthor);
 		touitte.setDate(System.currentTimeMillis());
 		touitte.setContent(content);
 
@@ -190,7 +172,6 @@ public class PetitTouitteAPI
 		index.setTouitte(touitte);
 		index.setReceivers(author.getFollowers());
 
-		PersistenceManager pm = getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 
 		try
@@ -215,14 +196,4 @@ public class PetitTouitteAPI
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
-
-	/*
-  @ApiMethod(name = "user.timeline")
-	public TouitteCollection timeline(@Named("id") Long id, @Named("count") Long count, @Named("offset") Long offset)
-	{
-		PersistenceManager pm = getPersistenceManager();
-    Query query = pm.newQuery();
-
-	}
-	 */
 }
