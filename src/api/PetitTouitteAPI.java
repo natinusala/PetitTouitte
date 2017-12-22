@@ -46,30 +46,25 @@ public class PetitTouitteAPI
 	@ApiMethod(name = "user.follow")
 	public User followUser(@Named("idFollower") Long idFollower, @Named("idFollowing") Long idFollowing) throws Exception
 	{
-		User follower = getUserFromId(idFollower);
-		User following = getUserFromId(idFollowing);
+		PersistenceManager pm = getPersistenceManager();
+		
+		Transaction tx = pm.currentTransaction();
+				
+		tx.begin();
 
-		if (follower.getFollowing() == null)
-			follower.setFollowing(new HashSet<Long>());
-
-		if (follower.getFollowers() == null)
-			follower.setFollowers(new HashSet<Long>());
-
-		if (following.getFollowers() == null)
-			following.setFollowers(new HashSet<Long>());
-
-		if (following.getFollowing() == null)
-			following.setFollowing(new HashSet<Long>());
+		User follower = pm.getObjectById(User.class, idFollower);
+		User following = pm.getObjectById(User.class, idFollowing);
 
 		follower.getFollowing().add(idFollowing);
 		following.getFollowers().add(idFollower);
 
-		follower.setFollowersCount(follower.getFollowers().size());
-		follower.setFollowingCount(follower.getFollowing().size());
-
-		following.setFollowersCount(following.getFollowers().size());
-		following.setFollowingCount(following.getFollowing().size());
-
+		follower.setFollowingCount(follower.getFollowingCount() + 1);
+		following.setFollowersCount(following.getFollowersCount() + 1);
+		
+		tx.commit();
+		
+		pm.close();
+		
 		return follower;
 	}
 
@@ -89,10 +84,18 @@ public class PetitTouitteAPI
 	{
 		if (user == null || user.getAlias() == null || user.getName() == null)
 			throw new Exception("Invalid user");
+		
+		if (user.getFollowing() == null)
+			user.setFollowing(new HashSet<Long>());
 
+		if (user.getFollowers() == null)
+			user.setFollowers(new HashSet<Long>());
+		
 		PersistenceManager pm = getPersistenceManager();
 
 		pm.makePersistent(user);
+		
+		user.getFollowers().add(user.getId());
 
 		pm.close();
 
