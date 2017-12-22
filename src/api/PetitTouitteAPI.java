@@ -73,12 +73,15 @@ public class PetitTouitteAPI
 		
 		Query query = pm.newQuery(User.class);
 		query.deletePersistentAll();
+		pm.newQuery(query).execute();
 		
 		query = pm.newQuery(TouitteIndex.class);
 		query.deletePersistentAll();
+		pm.newQuery(query).execute();
 		
 		query = pm.newQuery(Touitte.class);
 		query.deletePersistentAll();
+		pm.newQuery(query).execute();
 		
 		pm.close();
 		
