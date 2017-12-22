@@ -1,7 +1,7 @@
 # PetitTouitte
 Projet de Web Cloud &amp; Datastore de M1 ALMA
 
-Lien vers le front-end : http://plnkr.co/edit/VIhnJNxAk1KzpSVMZT6G?p=preview
+Lien vers le front-end : http://plnkr.co/edit/VOrO26yAVSJozs5wG2Li
 
 Lien vers l'explorateur de l'API : https://apis-explorer.appspot.com/apis-explorer/?base=https://petittouitte2.appspot.com/_ah/api#p/
 
