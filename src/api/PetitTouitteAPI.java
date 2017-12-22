@@ -48,20 +48,32 @@ public class PetitTouitteAPI
 	{
 		PersistenceManager pm = getPersistenceManager();
 		
-		Transaction tx = pm.currentTransaction();
-				
-		tx.begin();
-
-		User follower = pm.getObjectById(User.class, idFollower);
-		User following = pm.getObjectById(User.class, idFollowing);
-
-		follower.getFollowing().add(idFollowing);
-		following.getFollowers().add(idFollower);
-
-		follower.setFollowingCount(follower.getFollowingCount() + 1);
-		following.setFollowersCount(following.getFollowersCount() + 1);
+		Transaction tx = pm.currentTransaction();	
 		
-		tx.commit();
+		User follower = null;
+		
+		try
+		{
+			tx.begin();
+
+			follower = pm.getObjectById(User.class, idFollower);
+			User following = pm.getObjectById(User.class, idFollowing);
+
+			follower.getFollowing().add(idFollowing);
+			following.getFollowers().add(idFollower);
+
+			follower.setFollowingCount(follower.getFollowingCount() + 1);
+			following.setFollowersCount(following.getFollowersCount() + 1);
+			
+			tx.commit();
+		}
+		finally
+		{
+			if (tx.isActive())
+			{
+				tx.rollback();
+			}
+		}
 		
 		pm.close();
 		
